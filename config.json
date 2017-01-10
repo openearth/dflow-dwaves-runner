@@ -1,0 +1,12 @@
+{
+    "ARCH" = "win64",
+    "D3D_HOME" = "C:\vanArjen-Dflow_setup\fm_versions\3Nov",
+    "exe_dir" = "c:\fm_versions\dflowfm-lib-x64-1.1.192.48947\dflowfm-lib-x64-1.1.192.48947",
+    "flow_dir" = "c:\Users\velhorst\Desktop\PythonScripts\BMI\models\SandEngine\DF",
+    "wave_dir" = "c:\Users\velhorst\Desktop\PythonScripts\BMI\models\SandEngine\WV",
+    "mdu_file" = "zm_dfm_used.mdu",
+    "mdw_file" = "zm_dfm_used.mdw",
+    "com_structure" = {
+        "bl" = "-FlowElem_zcc"
+    }
+}    
