@@ -32,7 +32,7 @@ class DFWR(IBmi):
 
         # store path list
         pathlist = []
-        for name in [dflowfmexedir,waveexedir,swanexedir,swanbatdir,esmfexedir,esmfbatdir]:
+        for name in [self.cfg['exe_dir'], waveexedir, swanexedir, swanbatdir, esmfexedir, esmfbatdir]:
             pathlist.append(name)
         
         for path in pathlist:
@@ -155,7 +155,8 @@ class DFWR(IBmi):
         
         # find _com.nc file
         output_DF = os.path.join(self.flow_dir, r'DFM_OUTPUT_{}'.format(os.path.splitext(self.cfg['mdu_file'])[0]))
-        com_nc_locater = os.path.join(output_DF, r'*_com.nc')
+        com_nc_locater = os.path.join(output_DF, r'*_com.nc') # Original 
+#        com_nc_locater = os.path.join(output_DF.replace(' ',''),r'*_com.nc') # quick fix with replace (something because of an extra space)
         com_nc = glob(com_nc_locater)
         self.com_file = com_nc[0]
 
@@ -176,7 +177,7 @@ class DFWR(IBmi):
         # update dflow
         os.chdir(self.flow_dir)
         self.dflow.update(dt)
-
+        
         # get dflow bed level to set in com-file, update bed level in com-file
         for vf, vc in self.cfg['com_structure'].iteritems():
             val = self.dflow.get_var(vf)
@@ -201,9 +202,10 @@ class DFWR(IBmi):
             val = -val
         
         fname = self.com_file
+        
         with xarray.open_dataset(fname) as ds:
             data = ds.copy(deep=True)
-            # Problem encountered: variable 'windyu' has a attribute called 'coordinates'
+            # Problem encountered: variable 'windyu' has an attribute called 'coordinates'
             # This is problematic because the "coordinates" (eg x and y)  cannot be serialized anymore
             # ugly solution: remove this attribute only
             # Fairly better solution: remove all attributes called 'coordinates'
@@ -211,6 +213,7 @@ class DFWR(IBmi):
             for var_name in data.variables.keys():
                 data[var_name].attrs.pop('coordinates',None)    
             data[var].values = val
-            data.to_netcdf(fname,format="NETCDF3_CLASSIC")
+#            data.to_netcdf(fname,mode='w',format="NETCDF3_CLASSIC")  #    <---- BUG, SHOULD BE FIXED. ASK RUFUS; He says it works for him.
+
 
             
