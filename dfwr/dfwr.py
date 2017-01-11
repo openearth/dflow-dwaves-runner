@@ -146,20 +146,21 @@ class DFWR(IBmi):
 
     
     def initialize(self):
-
         # initialize dflow
+        os.chdir(self.flow_dir)
         self.dflow.initialize()
 
         # initialize dwaves
+        os.chdir(self.wave_dir)
         self.dwaves.initialize()
         
         # find _com.nc file
+        os.chdir(self.flow_dir)
         output_DF = os.path.join(self.flow_dir, r'DFM_OUTPUT_{}'.format(os.path.splitext(self.cfg['mdu_file'])[0]))
         com_nc_locater = os.path.join(output_DF, r'*_com.nc') # Original 
-#        com_nc_locater = os.path.join(output_DF.replace(' ',''),r'*_com.nc') # quick fix with replace (something because of an extra space)
+
         com_nc = glob(com_nc_locater)
         self.com_file = com_nc[0]
-
         
     def update(self, dt=1200):
         # for starters: use the exchange interval between dflow and 
@@ -210,10 +211,10 @@ class DFWR(IBmi):
             # ugly solution: remove this attribute only
             # Fairly better solution: remove all attributes called 'coordinates'
             # Best solution (but I don't know how): do not create this attribute in the first place
-            for var_name in data.variables.keys():
-                data[var_name].attrs.pop('coordinates',None)    
-            data[var].values = val
-#            data.to_netcdf(fname,mode='w',format="NETCDF3_CLASSIC")  #    <---- BUG, SHOULD BE FIXED. ASK RUFUS; He says it works for him.
+        for var_name in data.variables.keys():
+            data[var_name].attrs.pop('coordinates',None)    
+        data[var].values = val
+        data.to_netcdf(fname,mode='w',format="NETCDF3_CLASSIC")  #    <---- BUG, SHOULD BE FIXED. ASK RUFUS; He says it works for him.
 
 
             
